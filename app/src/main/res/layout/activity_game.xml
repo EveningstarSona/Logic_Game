@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical"
+    tools:context=".GameActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <Button
+            android:id="@+id/button_tip"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight=".1" />
+
+        <TextView
+            android:id="@+id/text_tip_one"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight=".8"
+            android:gravity="center"
+            android:text="" />
+
+        <Button
+            android:id="@+id/button_menu"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight=".1" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/text_tip_two"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="" />
+
+    <TextView
+        android:id="@+id/text_tip_three"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="" />
+
+    <TextView
+        android:id="@+id/text_tip_four"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="" />
+
+    <TextView
+        android:id="@+id/text_tip_five"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <TextView
+            android:id="@+id/text_white_one"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight=".151"
+            android:gravity="center"
+            android:text="@string/clear" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight=".14"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/button_up_one"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="30"
+                tools:ignore="NestedWeights" />
+
+            <TextView
+                android:id="@+id/text_answer_one"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="40"
+                android:gravity="center"
+                android:text=""
+                android:textSize="30sp"
+                tools:ignore="NestedWeights" />
+
+            <Button
+                android:id="@+id/button_down_one"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="30"
+                tools:ignore="NestedWeights" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/text_white_two"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight=".046"
+            android:gravity="center"
+            android:text="@string/clear" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight=".14"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/button_up_two"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="30"
+                tools:ignore="NestedWeights" />
+
+            <TextView
+                android:id="@+id/text_answer_two"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="40"
+                android:gravity="center"
+                android:text=""
+                android:textSize="30sp"
+                tools:ignore="NestedWeights" />
+
+            <Button
+                android:id="@+id/button_down_two"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="30"
+                tools:ignore="NestedWeights" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/text_white_three"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight=".046"
+            android:gravity="center"
+            android:text="@string/clear" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight=".14"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/button_up_three"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="30"
+                tools:ignore="NestedWeights" />
+
+            <TextView
+                android:id="@+id/text_answer_three"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="40"
+                android:gravity="center"
+                android:text=""
+                android:textSize="30sp"
+                tools:ignore="NestedWeights" />
+
+            <Button
+                android:id="@+id/button_down_three"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="30"
+                tools:ignore="NestedWeights" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/text_white_four"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight=".046"
+            android:gravity="center"
+            android:text="@string/clear" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight=".14"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/button_up_four"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="30"
+                tools:ignore="NestedWeights" />
+
+            <TextView
+                android:id="@+id/text_answer_four"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="40"
+                android:gravity="center"
+                android:text=""
+                android:textSize="30sp"
+                tools:ignore="NestedWeights" />
+
+            <Button
+                android:id="@+id/button_down_four"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="30"
+                tools:ignore="NestedWeights" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/text_white_five"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight=".151"
+            android:gravity="center"
+            android:text="@string/clear" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/button_done"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="@string/button_done" />
+
+</androidx.appcompat.widget.LinearLayoutCompat>
