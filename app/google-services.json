@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "1085520022282",
+    "firebase_url": "https://password-5b56c.firebaseio.com",
+    "project_id": "password-5b56c",
+    "storage_bucket": "password-5b56c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1085520022282:android:cc69084b74ad26716308f3",
+        "android_client_info": {
+          "package_name": "com.eveningstarsona.logicgame"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1085520022282-9g9l60khh50fi95dtcj8pco9as89bgig.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC678eCuYwncl3b7VpiTC4WoNRa51wkM_o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1085520022282-9g9l60khh50fi95dtcj8pco9as89bgig.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
