@@ -16,6 +16,7 @@ import com.google.android.gms.ads.rewarded.RewardedAd
 import com.google.android.gms.ads.rewarded.RewardedAdCallback
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
 import kotlinx.android.synthetic.main.activity_game.*
+import kotlin.math.min
 
 class GameActivity : AppCompatActivity() {
 
@@ -60,8 +61,8 @@ class GameActivity : AppCompatActivity() {
 
         fun markButtons(buttons: MutableList<Button>, texts: MutableList<TextView>) {
             for (count in 0 until buttons.size) {
+                buttons[count].visibility = View.VISIBLE
                 buttons[count].setOnClickListener {
-                    buttons[count].visibility = View.VISIBLE
                     when (texts[count].currentTextColor) {
                         Color.BLACK -> {
                             texts[count].setTextColor(Color.RED)
@@ -329,52 +330,15 @@ class GameActivity : AppCompatActivity() {
 
     @SuppressLint("SetTextI18n")
     private fun adTip() {
-        fun failCheck(
-            password: MutableList<Int>,
-            clues: MutableList<MutableList<Int>>
-        ): Boolean {
-            var aux = true
-            for (num in password) {
-                if (!aux)
-                    break
-                for (clue in clues) {
-                    if (!game.covers(mutableListOf(num), clue)) {
-                        aux = true
-                    } else {
-                        aux = false
-                        break
-                    }
-                }
-            }
-
-            val cluesAux: MutableList<MutableList<Int>> =
-                clues.map { game.countAmount(it, password, password.size)[0] }.toMutableList()
-            val correctAux = cluesAux.map { it[0] }.toMutableList()
-            val correctList: MutableList<Int> = mutableListOf()
-            for (item in correctAux)
-                correctList.add(item)
-            return when {
-                game.covers(mutableListOf(password.size), correctList) -> true
-                game.covers(mutableListOf(0), correctList) -> true
-                else -> aux
-            }
-        }
-
-        var fail = true
-        var clues: MutableList<MutableList<Int>> = mutableListOf()
-        while (fail) {
-            clues = mutableListOf()
-            clues.add(game.generateClue(game.password, game.size))
-            fail = failCheck(game.password, clues)
-        }
-        val start = clues[0].joinToString(separator = "")
-        val amount = game.countAmount(clues[0], game.password, game.size)
-        val middle = amount[0][0]
-        val end = amount[0][1]
-        var clue = "$start\n$middle correct numbers!"
+        val clue: MutableList<Int> = game.generateClue()
+        val start = clue.joinToString(separator = "")
+        val amount = game.countAmount(clue)
+        val middle = amount[0]
+        val end = amount[1]
+        var clueText = "$start\n$middle correct numbers!"
         if (end != 0)
-            clue = "$clue\n$end correct places!"
-        text_tip_six.text = "$clue\n"
+            clueText = "$clueText\n$end correct places!"
+        text_tip_six.text = "$clueText\n"
         button_tip_six.visibility = View.INVISIBLE
         tipAd = createAndLoadRewardedAd(
             "ca-app-pub-3940256099942544/5224354917"
@@ -389,46 +353,39 @@ class GameActivity : AppCompatActivity() {
         private var clues = mutableListOf<MutableList<Int>>()
 
         fun getClues(which: Int): String {
-            val start = this.clues[which - 1].joinToString(separator = "")
-            val amount = countAmount(clues[which - 1], password, size)
-            val middle = amount[0][0]
-            val end = amount[0][1]
-            var clue = "$start\n$middle correct numbers!"
-            if (end != 0)
-                clue = "$clue\n$end correct places!"
+            val start = clues[which - 1].joinToString(separator = "")
+            val amount = countAmount(clues[which - 1])
+            val middle = amount[0]
+            val end = amount[1]
+            var s = if (middle > 1) "s" else ""
+            var clue = "$start\n$middle correct number$s!"
+            if (end != 0) {
+                s = if (end > 1) "s" else ""
+                clue = "$clue\n$end correct place$s!"
+            }
             clue = "$clue\n"
             return clue
         }
 
-        private fun isRepeated(password: MutableList<Int>): Boolean {
-            for (num in password)
-                if (password.count { it == num } > 1)
+        private fun isRepeated(clue: MutableList<Int>): Boolean {
+            for (num in clue)
+                if (clue.count { it == num } > 1)
                     return true
             return false
         }
 
-        fun countAmount(
-            clue: MutableList<Int>,
-            password: MutableList<Int>,
-            size: Int
-        ): MutableList<MutableList<Int>> {
+        fun countAmount(clue: MutableList<Int>): MutableList<Int> {
+            fun Boolean.toInt() = if (this) 1 else 0
             var count = 0
             var same = 0
-            for (num in 0 until size) {
-                if (password.count { it == clue[num] } > 0) {
-                    count += 1
-                    if (clue[num] == password[num])
-                        same += 1
-                }
+            for (num in 0 until password.size) {
+                count += min(password.count { it == clue[num] }, 1)
+                same += (clue[num] == password[num]).toInt()
             }
-            return mutableListOf(mutableListOf(count, same), countWhich(clue, password, size))
+            return mutableListOf(count, same)
         }
 
-        private fun countWhich(
-            clue: MutableList<Int>,
-            password: MutableList<Int>,
-            size: Int
-        ): MutableList<Int> {
+        private fun countWhich(clue: MutableList<Int>): MutableList<Int> {
             val sameList: MutableList<Int> = mutableListOf()
             for (num in 0 until size)
                 if (password.count { it == clue[num] } != 0)
@@ -437,107 +394,64 @@ class GameActivity : AppCompatActivity() {
             return sameList
         }
 
-        fun covers(clue: MutableList<Int>, password: MutableList<Int>): Boolean {
-            for (num in clue)
-                if (password.count { it == num } != 0)
-                    return true
-            return false
-        }
-
-        fun generateClue(password: MutableList<Int>, size: Int): MutableList<Int> {
-            var aux = mutableListOf(-1, -1, -1, -1)
-            while (!covers(aux, password)) {
-                aux = generateNumber(size)
+        fun generateClue(): MutableList<Int> {
+            var aux: MutableList<Int> = mutableListOf(0, 0, 0, 0)
+            while (monoFailCheck(aux, 1)) {
+                aux = generateNumber()
             }
             return aux
         }
 
-        private fun rawGen(size: Int): MutableList<Int> {
-            var aux: MutableList<Int> = mutableListOf()
-            if (size == 4) {
-                val auxString = (123..9876).shuffled().first().toString().split("").toMutableList()
-                for (i in 1..2)
-                    auxString.remove("")
-                aux = auxString.map { it.toInt() }.toMutableList()
-            } else if (size == 5) {
-                val auxString =
-                    (1234..98765).shuffled().first().toString().split("").toMutableList()
-                for (i in 1..2)
-                    auxString.remove("")
-                aux = auxString.map { it.toInt() }.toMutableList()
-            }
-            return aux
+        private fun generateNumber(): MutableList<Int> {
+            val aux = (123..9876).shuffled().first().toString().split("").toMutableList()
+            for (i in (1..2))
+                aux.remove("")
+            if (aux.size != size)
+                aux.add(0, "0")
+            return aux.map { it.toInt() }.toMutableList()
         }
 
-        private fun generateNumber(size: Int): MutableList<Int> {
-            var aux = mutableListOf(0, 0, 0, 0)
-            while (isRepeated(aux)) {
-                aux = rawGen(size)
-                while (size != aux.size)
-                    aux.add(0, 0)
-            }
-            return aux
-        }
-
-        private fun failCheck(
-            password: MutableList<Int>,
-            clues: MutableList<MutableList<Int>>
-        ): Boolean {
+        private fun monoFailCheck(clue: MutableList<Int>, what: Int): Boolean {
             var aux = true
-            for (num in password) {
-                if (!aux)
-                    break
-                for (clue in clues) {
-                    if (!covers(mutableListOf(num), clue)) {
-                        aux = true
-                    } else {
+            if (isRepeated(clue))
+                return true
+            if (clue.size != size)
+                return true
+            if (what == 1) {
+                for (num in password)
+                    if (clue.contains(num)) {
                         aux = false
                         break
                     }
-                }
-            }
-
-            val cluesAux: MutableList<MutableList<Int>> =
-                clues.map { countAmount(it, password, password.size)[0] }.toMutableList()
-            val correctAux = cluesAux.map { it[0] }.toMutableList()
-            val cluesAuxTwo: MutableList<Int> =
-                clues.map { countAmount(it, password, password.size)[1] }.flatten().toMutableList()
-            var rightList: MutableList<Int> = mutableListOf()
-            val correctList: MutableList<Int> = mutableListOf()
-            val contain: MutableList<MutableList<Int>> = mutableListOf()
-            for (clue in clues)
-                contain.add(clue)
-            val containTwo: MutableList<Int> = contain.flatten().distinct().toMutableList()
-            for (num in password)
-                if (!covers(containTwo, mutableListOf(num)))
+                if (countAmount(clue)[0] >= clue.size)
                     return true
-            for (item in cluesAuxTwo)
-                rightList.add(item)
-            for (item in correctAux)
-                correctList.add(item)
-            rightList = rightList.distinct().toMutableList()
-            return when {
-                rightList.size <= password.size - 2 -> true
-                covers(mutableListOf(password.size), correctList) -> true
-                covers(mutableListOf(0), correctList) -> true
-                else -> {
-                    aux
-                }
+                return aux
             }
+            return false
         }
 
-        private fun generateClues(
-            password: MutableList<Int>,
-            size: Int,
-            clueAmount: Int
-        ): MutableList<MutableList<Int>> {
+        private fun poliFailCheck(clues: MutableList<MutableList<Int>>): Boolean {
+            val rightList: MutableList<Int> =
+                clues.asSequence().map { countWhich(it) }.flatten().distinct().toMutableList()
+            val contain: MutableList<Int> = clues.flatten().distinct().toMutableList()
+            val aux = (rightList.size <= password.size - 2)
+            for (num in password)
+                if (!contain.contains(num))
+                    return true
+            return (rightList.size <= password.size - 2)
+        }
+
+        private fun generateClues(): MutableList<MutableList<Int>> {
             var fail = true
+            var clue: MutableList<Int>
             var clues: MutableList<MutableList<Int>> = mutableListOf()
             while (fail) {
                 clues = mutableListOf()
-                for (i in 1..clueAmount)
-                    clues.add(generateClue(password, size))
-                fail = failCheck(password, clues)
+                for (i in 1..clueAmount) {
+                    clue = generateClue()
+                    clues.add(clue)
+                }
+                fail = poliFailCheck(clues)
             }
             return clues
         }
@@ -546,9 +460,9 @@ class GameActivity : AppCompatActivity() {
             if (answer == password)
                 return true
             val passwordAux: MutableList<MutableList<Int>> =
-                clues.map { countAmount(it, password, size)[0] }.toMutableList()
+                clues.map { countAmount(it) }.toMutableList()
             val answerAux: MutableList<MutableList<Int>> =
-                clues.map { countAmount(it, answer, size)[0] }.toMutableList()
+                clues.map { countAnswerAmount(it, answer) }.toMutableList()
             for (i in 1..clues.size) {
                 if (passwordAux[i][0] != answerAux[i][0]) {
                     return false
@@ -560,9 +474,30 @@ class GameActivity : AppCompatActivity() {
             return true
         }
 
+        private fun countAnswerAmount(
+            clue: MutableList<Int>,
+            answer: MutableList<Int>
+        ): MutableList<Int> {
+            fun Boolean.toInt() = if (this) 1 else 0
+            var count = 0
+            var same = 0
+            for (num in 0 until answer.size) {
+                count += min(answer.count { it == clue[num] }, 1)
+                same += (clue[num] == answer[num]).toInt()
+            }
+            return mutableListOf(count, same)
+        }
+
+        private fun generatePassword(): MutableList<Int> {
+            var aux: MutableList<Int> = mutableListOf()
+            while (monoFailCheck(aux, 0))
+                aux = generateNumber()
+            return aux
+        }
+
         fun generateGame() {
-            this.password = generateNumber(this.size)
-            this.clues = generateClues(this.password, this.size, this.clueAmount)
+            password = generatePassword()
+            clues = generateClues()
         }
     }
 }
