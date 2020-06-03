@@ -23,7 +23,6 @@ class GameActivity : AppCompatActivity() {
     private var game: Game = Game()
     private lateinit var tipAd: RewardedAd
     private lateinit var answerAd: RewardedAd
-    private var currentAd = "none"
     private var answerAdPositions: MutableList<Int> = mutableListOf()
 
     @SuppressLint("SetTextI18n")
@@ -196,7 +195,6 @@ class GameActivity : AppCompatActivity() {
 
             }
             button_help.setOnClickListener {
-                currentAd = "answer"
                 if (answerAd.isLoaded) {
                     val activityContext: Activity = this@GameActivity
                     val adCallback = object : RewardedAdCallback() {

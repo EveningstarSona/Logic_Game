@@ -12,3 +12,4 @@
 /captures
 .externalNativeBuild
 .cxx
+/android/app/src/main/AndroidManifest.xml
